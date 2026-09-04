@@ -1,15 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VETERINARIA_SAN_MARCOS</title>
+    <meta name="description" content="Veterinaria San Marcos: cuidado cercano y profesional para quienes más quieres.">
+    <title>Veterinaria San Marcos | Cuidado que se nota</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="assets/js/main.js"></script>
-    
 </head>
 <body>
-    
+    <header class="site-header" id="inicio">
+        <nav class="site-nav" aria-label="Navegación principal">
+            <a class="brand" href="#inicio" aria-label="Veterinaria San Marcos, inicio">
+                <span class="brand-mark">✚</span>
+                <span>San Marcos<small>Veterinaria</small></span>
+            </a>
+            <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false">☰</button>
+            <div class="nav-links" id="mainMenu">
+                <a href="#servicios">Servicios</a>
+                <a href="#nosotros">Nosotros</a>
+                <a class="nav-login" href="login.html">Iniciar sesión</a>
+                <a class="nav-register" href="registro.html">Crear cuenta</a>
+                    <a class="nav-home" href="#inicio">Inicio</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <p class="eyebrow">Desde 2009 · Rancagua</p>
+                <h1>La salud de tu mascota, siempre cerca.</h1>
+                <p class="hero-copy">Atención veterinaria cercana y profesional para perros, gatos, conejos y aves. Agenda, historial clínico y vacunas en un solo lugar.</p>
+                <div class="hero-actions">
+                    <a class="primary-action" href="registro.html">Regístrate ahora <span>→</span></a>
+                    <a class="text-action" href="#servicios">Conoce nuestros servicios <span>↓</span></a>
+                </div>
+                <div class="trust-line"><span>♥</span> Cuidamos a quienes son parte de tu familia</div>
+            </div>
+            <div class="hero-visual" aria-label="Perro recibiendo atención veterinaria">
+                <div class="visual-note"><strong>+12 años</strong><span>cuidando familias</span></div>
+                <div class="visual-caption"><span class="caption-dot"></span> Siempre cerca de ti</div>
+            </div>
+        </section>
+
+        <section class="intro-section" id="nosotros">
+            <div class="section-kicker">Nuestra forma de cuidar</div>
+            <div class="intro-grid">
+                <h2>La salud de tu mascota merece un lugar en tu día.</h2>
+                    <p>En San Marcos combinamos experiencia y una mirada humana para que cada visita sea más simple. Consulta la ficha clínica, revisa las vacunas y solicita una cita sin depender del papel ni de una llamada.</p>
+            </div>
+        </section>
+
+        <section class="services-section" id="servicios">
+            <div class="section-heading">
+                <div>
+                    <div class="section-kicker">Atención para cada etapa</div>
+                    <h2>Todo para una vida más saludable.</h2>
+                </div>
+                <a class="arrow-link" href="registro.html" aria-label="Ver más y crear una cuenta">↗</a>
+            </div>
+            <div class="service-grid">
+                <article class="service-card service-card-featured"><span class="service-icon">✚</span><h3>Vacunación y prevención</h3><p>Control de vacunas, desparasitación y peso para anticiparnos a cualquier problema.</p><a href="registro.html">Solicitar atención <span>→</span></a></article>
+                <article class="service-card"><span class="service-icon">♡</span><h3>Consultas y cirugía menor</h3><p>Evaluaciones completas y procedimientos con el cuidado que cada paciente necesita.</p><a href="registro.html">Solicitar atención <span>→</span></a></article>
+                <article class="service-card"><span class="service-icon">⌁</span><h3>Historial digital</h3><p>Consulta citas, diagnósticos y tratamientos de tus mascotas desde cualquier dispositivo.</p><a href="registro.html">Crear mi cuenta <span>→</span></a></article>
+            </div>
+        </section>
+
+        <section class="closing-section">
+            <div><p class="eyebrow">Una clínica organizada para ti</p><h2>Tu próxima cita empieza aquí.</h2></div>
+            <a class="primary-action light-action" href="registro.html">Crear mi cuenta <span>→</span></a>
+        </section>
+    </main>
+
+    <footer class="site-footer"><span>© <span id="currentYear"></span> Veterinaria San Marcos</span><span>Comprometidos con su bienestar</span></footer>
 </body>
 </html>

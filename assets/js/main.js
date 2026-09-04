@@ -16,6 +16,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (rememberedUser && emailInput) {
         emailInput.value = rememberedUser;
     }
+
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mainMenu = document.getElementById('mainMenu');
+    if (menuToggle && mainMenu) {
+        menuToggle.addEventListener('click', () => {
+            const isOpen = mainMenu.classList.toggle('is-open');
+            menuToggle.setAttribute('aria-expanded', String(isOpen));
+            menuToggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+        });
+
+        mainMenu.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', () => {
+                mainMenu.classList.remove('is-open');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    }
+
+    const currentYear = document.getElementById('currentYear');
+    if (currentYear) {
+        currentYear.textContent = new Date().getFullYear();
+    }
 });
 
 function showError(fieldId, message) {
@@ -33,6 +55,43 @@ function clearErrors() {
 function validateEmail(email) {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
+}
+
+function handleRegister(event) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const email = formData.get('email')?.trim() || '';
+    const phone = formData.get('phone')?.trim() || '';
+    const password = formData.get('password') || '';
+
+    if (!validateEmail(email)) {
+        showError('registerEmailError', 'Ingresa un correo válido.');
+        return false;
+    }
+
+    if (!/^\+?[0-9\s()-]{7,}$/.test(phone)) {
+        showError('phoneError', 'Ingresa un número de teléfono válido.');
+        return false;
+    }
+
+    if (password.length < 6) {
+        showError('registerPasswordError', 'La contraseña debe tener al menos 6 caracteres.');
+        return false;
+    }
+
+    localStorage.setItem('veterinariaSanMarcosRegisteredUser', JSON.stringify({
+        firstName: formData.get('firstName'),
+        lastName: formData.get('lastName'),
+        email,
+        phone,
+        password
+    }));
+
+    alert('Registro completado correctamente.');
+    window.location.href = 'login.html';
+    return false;
 }
 
 function handleLogin(event) {
@@ -89,4 +148,5 @@ function togglePassword() {
 }
 
 window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
 window.togglePassword = togglePassword;
