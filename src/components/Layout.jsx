@@ -1,0 +1,8 @@
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useShop } from '../context/ShopContext';
+const navClass = ({ isActive }) => `nav-link ${isActive ? 'active' : ''}`;
+export function Layout() {
+  const { cartCount, user, logout } = useShop(); const navigate = useNavigate();
+  const leave = () => { logout(); navigate('/'); };
+  return <div className="app-shell"><header className="shadow-sm bg-white sticky-top"><nav className="navbar navbar-expand-lg container py-3"><NavLink className="navbar-brand brand-text" to="/">✚ <span>San Marcos<small>Veterinaria</small></span></NavLink><button className="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu" aria-label="Abrir menú"><span className="navbar-toggler-icon" /></button><div id="menu" className="collapse navbar-collapse"><div className="navbar-nav ms-auto align-items-lg-center gap-lg-2"><NavLink className={navClass} to="/categorias">Categorías</NavLink><NavLink className={navClass} to="/ofertas">Ofertas</NavLink>{user?.role === 'admin' && <NavLink className={navClass} to="/admin">Administración</NavLink>}<NavLink className="btn btn-outline-success ms-lg-2" to="/carrito">Carrito <span className="badge text-bg-success">{cartCount}</span></NavLink>{user ? <button className="btn btn-success ms-lg-2" onClick={leave}>Salir</button> : <NavLink className="btn btn-success ms-lg-2" to="/ingresar">Ingresar</NavLink>}</div></div></nav></header><main><Outlet /></main><footer className="footer mt-5 py-4"><div className="container d-flex flex-column flex-md-row justify-content-between gap-2"><span>© {new Date().getFullYear()} Veterinaria San Marcos</span><span>Rancagua · Cuidamos a quienes son parte de tu familia</span></div></footer></div>;
+}
