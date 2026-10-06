@@ -23,3 +23,4 @@ export const registerUser = ({ name, email, password }) => { const state = load(
 export const authenticate = (email, password) => { const user = load().users.find((item) => item.email.toLowerCase() === email.toLowerCase() && item.password === password); if (!user) throw new Error('Correo o contraseña incorrectos.'); return { ...user, password: undefined }; };
 export const createOrder = ({ customer, items, total }) => { if (!items.length) throw new Error('El carrito está vacío.'); const state = load(); const order = { id: makeId('o'), customer, items, total, createdAt: new Date().toISOString(), status: 'Confirmada' }; state.orders.unshift(order); save(state); return order; };
 export const resetDatabase = () => localStorage.removeItem(STORAGE_KEY);
+
