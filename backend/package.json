@@ -1,0 +1,13 @@
+{
+  "name": "veterinaria-san-marcos-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Backend básico (API REST) para Veterinaria San Marcos. Sin dependencias externas.",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test test/api.test.js"
+  }
+}
