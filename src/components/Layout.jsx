@@ -1,9 +1,108 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { useAuth } from '../context/AuthContext';
-const navClass = ({ isActive }) => `nav-link ${isActive ? 'active' : ''}`;
+import Icon from './Icon';
+
+const pill = ({ isActive }) => `nav-pill${isActive ? ' active' : ''}`;
+
+export function Brand({ to = '/' }) {
+  return <Link className="brand" to={to} aria-label="Veterinaria San Marcos, inicio">
+    <span className="brand-mark"><Icon name="paw" size={24} /></span>
+    <span className="brand-name">San Marcos<small>Veterinaria</small></span>
+  </Link>;
+}
+
 export function Layout() {
-  const { cartCount } = useShop(); const { user, isAdmin, logout } = useAuth(); const navigate = useNavigate();
+  const { cartCount } = useShop();
+  const { user, isAdmin, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [open, setOpen] = useState(false);
+  const [bump, setBump] = useState(false);
+  const lastCount = useRef(cartCount);
+
+  // Cierra el menú móvil al cambiar de página y vuelve arriba
+  useEffect(() => { setOpen(false); window.scrollTo(0, 0); }, [location.pathname]);
+
+  // Pequeña animación del contador cuando se agrega algo al carrito
+  useEffect(() => {
+    if (cartCount > lastCount.current) {
+      setBump(true);
+      const t = setTimeout(() => setBump(false), 450);
+      lastCount.current = cartCount;
+      return () => clearTimeout(t);
+    }
+    lastCount.current = cartCount;
+  }, [cartCount]);
+
   const leave = () => { logout(); navigate('/'); };
-  return <div className="app-shell"><header className="shadow-sm bg-white sticky-top"><nav className="navbar navbar-expand-lg container py-3"><NavLink className="navbar-brand brand-text" to="/">✚ <span>San Marcos<small>Veterinaria</small></span></NavLink><button className="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu" aria-label="Abrir menú"><span className="navbar-toggler-icon" /></button><div id="menu" className="collapse navbar-collapse"><div className="navbar-nav ms-auto align-items-lg-center gap-lg-2"><NavLink className={navClass} to="/categorias">Categorías</NavLink><NavLink className={navClass} to="/ofertas">Ofertas</NavLink>{user && <NavLink className={navClass} to="/mis-pedidos">Mis pedidos</NavLink>}{isAdmin && <NavLink className={navClass} to="/admin">Administración</NavLink>}<NavLink className="btn btn-outline-success ms-lg-2" to="/carrito">Carrito <span className="badge text-bg-success">{cartCount}</span></NavLink>{user ? <><span className="small text-secondary ms-lg-2" title={user.email}>Hola, {user.name.split(' ')[0]} <span className={`badge ${isAdmin ? 'text-bg-dark' : 'text-bg-light border'}`}>{user.role}</span></span><button className="btn btn-success ms-lg-2" onClick={leave}>Salir</button></> : <NavLink className="btn btn-success ms-lg-2" to="/ingresar">Ingresar</NavLink>}</div></div></nav></header><main><Outlet /></main><footer className="footer mt-5 py-4"><div className="container d-flex flex-column flex-md-row justify-content-between gap-2"><span>© {new Date().getFullYear()} Veterinaria San Marcos</span><span>Rancagua · Cuidamos a quienes son parte de tu familia</span></div></footer></div>;
+  const firstName = user?.name?.split(' ')[0] || '';
+
+  return <div className="app-shell">
+    <a className="visually-hidden-focusable btn btn-warm m-2 position-absolute" href="#contenido">Saltar al contenido</a>
+    <header className="site-header">
+      <nav className="container nav-wrap" aria-label="Principal">
+        <Brand />
+        <button className="nav-toggle" type="button" aria-expanded={open} aria-controls="menu" aria-label={open ? 'Cerrar menú' : 'Abrir menú'} onClick={() => setOpen(!open)}>
+          <Icon name={open ? 'close' : 'menu'} size={22} />
+        </button>
+        <div id="menu" className={`nav-menu${open ? ' open' : ''}`}>
+          <NavLink className={pill} to="/categorias">Tienda</NavLink>
+          <NavLink className={pill} to="/ofertas"><Icon name="tag" size={16} />Ofertas</NavLink>
+          {user && <NavLink className={pill} to="/mis-pedidos">Mis pedidos</NavLink>}
+          {isAdmin && <NavLink className={pill} to="/admin">Administración</NavLink>}
+          <span className="nav-divider" aria-hidden="true" />
+          <NavLink className={({ isActive }) => `cart-chip${isActive ? ' active' : ''}`} to="/carrito" aria-label={`Carrito, ${cartCount} ${cartCount === 1 ? 'producto' : 'productos'}`}>
+            <Icon name="bag" size={18} />Carrito
+            <span className={`cart-count${cartCount ? '' : ' is-zero'}${bump ? ' bump' : ''}`}>{cartCount}</span>
+          </NavLink>
+          {user
+            ? <>
+              <span className="user-chip" title={user.email}>
+                <span className={`avatar${isAdmin ? ' admin' : ''}`} aria-hidden="true">{firstName.charAt(0).toUpperCase()}</span>
+                <span className="who">Hola, {firstName}<small>{user.role}</small></span>
+              </span>
+              <button className="btn btn-ghost btn-sm" type="button" onClick={leave}><Icon name="logout" size={16} />Salir</button>
+            </>
+            : <NavLink className="btn btn-warm" to="/ingresar"><Icon name="user" size={18} />Ingresar</NavLink>}
+        </div>
+      </nav>
+    </header>
+
+    <main id="contenido"><Outlet /></main>
+
+    <footer className="site-footer">
+      <svg className="wave" viewBox="0 0 1440 48" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 0h1440v14c-120 22-240 34-360 22S840 0 720 8 480 44 360 40 120 14 0 22z" /></svg>
+      <div className="container">
+        <div className="row g-4">
+          <div className="col-lg-5">
+            <Brand />
+            <p className="mt-3 mb-0" style={{ maxWidth: '36ch' }}>Cuidamos a quienes son parte de tu familia. Productos y atención veterinaria para perros, gatos, conejos y aves.</p>
+          </div>
+          <div className="col-6 col-lg-3">
+            <h2>Tienda</h2>
+            <ul>
+              <li><Link to="/categorias">Todos los productos</Link></li>
+              <li><Link to="/ofertas">Ofertas</Link></li>
+              <li><Link to="/carrito">Carrito</Link></li>
+            </ul>
+          </div>
+          <div className="col-6 col-lg-4">
+            <h2>Tu cuenta</h2>
+            <ul>
+              {user
+                ? <><li><Link to="/mis-pedidos">Mis pedidos</Link></li>{isAdmin && <li><Link to="/admin">Administración</Link></li>}</>
+                : <><li><Link to="/ingresar">Ingresar</Link></li><li><Link to="/registro">Crear cuenta</Link></li></>}
+              <li className="d-flex align-items-center gap-2"><Icon name="pin" size={16} />Rancagua, Chile</li>
+            </ul>
+          </div>
+        </div>
+        <div className="fine">
+          <span>© {new Date().getFullYear()} Veterinaria San Marcos</span>
+          <span>Hecho con <Icon name="heart" size={14} /> en Rancagua</span>
+        </div>
+      </div>
+    </footer>
+  </div>;
 }
