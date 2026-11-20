@@ -1,7 +1,49 @@
+import { useEffect, useState } from 'react';
 import { useShop } from '../context/ShopContext';
+import Icon from './Icon';
+import ProductImage from './ProductImage';
+
 const money = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
 export const formatMoney = (value) => money.format(value);
+
+// Cada categoría tiene su color; las nuevas reciben uno estable según su nombre.
+const TONES = { Alimentos: 'sage', Higiene: 'mustard', Salud: 'blush' };
+const FALLBACK = ['sage', 'mustard', 'blush'];
+export const toneFor = (category = '') => {
+  if (TONES[category]) return `tone-${TONES[category]}`;
+  const hash = [...category].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+  return `tone-${FALLBACK[hash % FALLBACK.length]}`;
+};
+
 export default function ProductCard({ product }) {
   const { addToCart } = useShop();
-  return <article className="card h-100 product-card border-0 shadow-sm"><div className="card-body d-flex flex-column"><div className="d-flex justify-content-between align-items-start"><span className="product-emoji">{product.emoji || '🐾'}</span>{product.offer && <span className="badge text-bg-warning">Oferta</span>}</div><p className="text-success fw-semibold small mb-1">{product.category}</p><h2 className="h5">{product.name}</h2><p className="text-secondary small flex-grow-1">{product.description}</p><div className="d-flex align-items-center justify-content-between gap-2"><strong>{formatMoney(product.price)}</strong><button className="btn btn-success btn-sm" disabled={!product.stock} onClick={() => addToCart(product)}>{product.stock ? 'Agregar' : 'Sin stock'}</button></div></div></article>;
+  const [added, setAdded] = useState(false);
+  const lowStock = product.stock > 0 && product.stock <= 5;
+
+  useEffect(() => {
+    if (!added) return undefined;
+    const t = setTimeout(() => setAdded(false), 1200);
+    return () => clearTimeout(t);
+  }, [added]);
+
+  const add = () => { addToCart(product); setAdded(true); };
+
+  return <article className={`pcard ${toneFor(product.category)}`}>
+    <div className="pcard-media">
+      <ProductImage product={product} className="pcard-art" />
+      {product.offer && <span className="pcard-badge">Oferta</span>}
+      {lowStock && <span className="pcard-stock">¡Quedan {product.stock}!</span>}
+    </div>
+    <div className="pcard-body">
+      <p className="pcard-cat">{product.category}</p>
+      <h2 className="pcard-title">{product.name}</h2>
+      <p className="pcard-desc">{product.description}</p>
+      <div className="pcard-foot">
+        <span className="price">{formatMoney(product.price)}</span>
+        <button className={`btn btn-warm btn-sm btn-add${added ? ' added' : ''}`} type="button" disabled={!product.stock} onClick={add}>
+          {product.stock ? <><Icon name={added ? 'check' : 'plus'} size={16} />{added ? 'Agregado' : 'Agregar'}</> : 'Sin stock'}
+        </button>
+      </div>
+    </div>
+  </article>;
 }
