@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Brand } from '../components/Layout';
 import Icon from '../components/Icon';
+import { PHOTOS } from '../data/photos';
 
 export default function Auth({ mode }) {
   const registering = mode === 'register';
@@ -28,10 +29,8 @@ export default function Auth({ mode }) {
 
   return <main className="auth">
     <section className="auth-art">
-      <div className="blob blob-a" aria-hidden="true" />
-      <div className="blob blob-b" aria-hidden="true" />
+      <img className="auth-photo" src={PHOTOS.login} alt="" aria-hidden="true" />
       <div className="position-relative"><Brand /></div>
-      <div className="auth-pets" aria-hidden="true"><span>🐈</span><span>🐕</span><span>🐇</span></div>
       <div className="auth-quote" aria-hidden="true">
         <p>{registering ? 'Únete a la familia San Marcos.' : 'Qué bueno verte de nuevo.'}</p>
         <small>Cuidamos perros, gatos, conejos y aves desde 2009.</small>

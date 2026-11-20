@@ -6,9 +6,11 @@ import { getAllOrders, updateOrderStatus } from '../services/orderService';
 import { getUsers, updateUserRole } from '../services/userService';
 import { formatMoney, toneFor } from '../components/ProductCard';
 import Icon from '../components/Icon';
+import ProductImage from '../components/ProductImage';
+import { PRODUCT_PHOTOS } from '../data/photos';
 import { statusLabel } from './MyOrders';
 
-const blank = { name: '', category: 'Alimentos', price: '', stock: '', offer: false, description: '', emoji: '🐾' };
+const blank = { name: '', category: 'Alimentos', price: '', stock: '', offer: false, description: '', emoji: '🐾', imageUrl: '' };
 const EMOJIS = ['🐾', '🐶', '🐱', '🐰', '🦜', '🦴', '🥩', '🧴', '🛁', '💊', '💉', '🧸'];
 const LOW_STOCK = 5;
 
@@ -39,7 +41,7 @@ export default function Admin() {
     if (ok) { await refreshProducts(); setForm(blank); setEditing(null); }
     setSaving(false);
   };
-  const edit = (product) => { setTab('productos'); setEditing(product.id); setForm(product); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const edit = (product) => { setTab('productos'); setEditing(product.id); setForm({ ...product, imageUrl: product.imageUrl || '' }); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   const cancelEdit = () => { setEditing(null); setForm(blank); };
   const remove = async (id) => {
     if (!window.confirm('¿Eliminar este producto?')) return;
@@ -100,6 +102,17 @@ export default function Admin() {
             <div className="col"><label className="form-label" htmlFor="ad-stock">Stock</label><input id="ad-stock" className="form-control" required min="0" type="number" name="stock" value={form.stock} onChange={change} /></div>
           </div>
           <div className="mb-3">
+            <span className="form-label d-block" id="ad-photo-label">Foto</span>
+            <div className="photo-pick mb-2" role="group" aria-labelledby="ad-photo-label">
+              <button type="button" className="none" aria-pressed={!form.imageUrl} onClick={() => setForm({ ...form, imageUrl: '' })}>Sin foto</button>
+              {PRODUCT_PHOTOS.map((p) => <button key={p.src} type="button" aria-pressed={form.imageUrl === p.src} aria-label={p.label} title={p.label} onClick={() => setForm({ ...form, imageUrl: p.src })}>
+                <img src={p.src} alt="" loading="lazy" />
+              </button>)}
+            </div>
+            <input className="form-control" name="imageUrl" type="text" inputMode="url" aria-label="URL de la foto" placeholder="o pega una URL https://…" value={form.imageUrl} onChange={change} />
+            <small className="text-secondary d-block mt-1">Si no hay foto, se muestra el ícono.</small>
+          </div>
+          <div className="mb-3">
             <span className="form-label d-block" id="ad-emoji-label">Ícono</span>
             <div className="emoji-pick mb-2" role="group" aria-labelledby="ad-emoji-label">
               {EMOJIS.map((e) => <button key={e} type="button" aria-pressed={form.emoji === e} aria-label={`Usar ${e}`} onClick={() => setForm({ ...form, emoji: e })}>{e}</button>)}
@@ -119,7 +132,7 @@ export default function Admin() {
           <table className="data-table">
             <thead><tr><th>Producto</th><th>Precio</th><th>Stock</th><th><span className="visually-hidden">Acciones</span></th></tr></thead>
             <tbody>{products.map((product) => <tr key={product.id} className={editing === product.id ? 'editing' : ''}>
-              <td><div className={`prod-cell ${toneFor(product.category)}`}><span className="thumb sm" aria-hidden="true">{product.emoji}</span><span>{product.name}<small>{product.category}{product.offer && <> · <span className="pill offer">Oferta</span></>}</small></span></div></td>
+              <td><div className={`prod-cell ${toneFor(product.category)}`}><ProductImage product={product} className="thumb sm" /><span>{product.name}<small>{product.category}{product.offer && <> · <span className="pill offer">Oferta</span></>}</small></span></div></td>
               <td className="text-nowrap fw-bold">{formatMoney(product.price)}</td>
               <td><span className={`pill ${product.stock <= LOW_STOCK ? 'low' : 'ok'}`}>{product.stock}</span></td>
               <td className="text-nowrap text-end">

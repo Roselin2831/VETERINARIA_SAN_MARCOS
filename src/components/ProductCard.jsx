@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useShop } from '../context/ShopContext';
 import Icon from './Icon';
+import ProductImage from './ProductImage';
 
 const money = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
 export const formatMoney = (value) => money.format(value);
@@ -29,7 +30,7 @@ export default function ProductCard({ product }) {
 
   return <article className={`pcard ${toneFor(product.category)}`}>
     <div className="pcard-media">
-      <span className="pcard-emoji" aria-hidden="true">{product.emoji || '🐾'}</span>
+      <ProductImage product={product} className="pcard-art" />
       {product.offer && <span className="pcard-badge">Oferta</span>}
       {lowStock && <span className="pcard-stock">¡Quedan {product.stock}!</span>}
     </div>

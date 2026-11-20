@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { formatMoney, toneFor } from '../components/ProductCard';
 import Icon from '../components/Icon';
+import ProductImage from '../components/ProductImage';
 
 export default function Cart() {
   const { cart, cartTotal, cartCount, updateQuantity } = useShop();
@@ -24,7 +25,7 @@ export default function Cart() {
     <div className="row g-4">
       <div className="col-lg-8">
         {cart.map((item) => <div className={`cart-item ${toneFor(item.category)}`} key={item.id}>
-          <span className="thumb" aria-hidden="true">{item.emoji || '🐾'}</span>
+          <ProductImage product={item} className="thumb" />
           <div>
             <h2>{item.name}</h2>
             <span className="unit">{formatMoney(item.price)} c/u</span>

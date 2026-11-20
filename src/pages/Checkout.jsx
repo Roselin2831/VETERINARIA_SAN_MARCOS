@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { createOrder } from '../services/orderService';
 import { formatMoney, toneFor } from '../components/ProductCard';
 import Icon from '../components/Icon';
+import ProductImage from '../components/ProductImage';
 
 // Los valores (value) son los que el backend guarda; no cambiarlos sin actualizar la API.
 const DELIVERY = [
@@ -109,7 +110,7 @@ export default function Checkout() {
         <div className="summary">
           <h2>Tu pedido</h2>
           {cart.map((item) => <div className={`summary-item ${toneFor(item.category)}`} key={item.id}>
-            <span className="thumb sm" aria-hidden="true">{item.emoji || '🐾'}</span>
+            <ProductImage product={item} className="thumb sm" />
             <span className="name">{item.name}<small>{item.quantity} × {formatMoney(item.price)}</small></span>
             <strong>{formatMoney(item.quantity * item.price)}</strong>
           </div>)}
