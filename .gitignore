@@ -5,7 +5,6 @@ dist/
 .DS_Store
 node_modules
 
-backend/data/
 .env
 .env.*
 !.env.example

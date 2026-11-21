@@ -33,5 +33,6 @@ Nginx (`nginx.conf`) sirve el frontend en el puerto 80 y reenvía `/api`,
 `/swagger-ui.html` y `/v3/api-docs` al backend Spring Boot. Todo funciona por el
 puerto 80 sin depender de la IP pública; MySQL permanece en la red privada de Docker.
 
-La carpeta `backend/` de este repositorio corresponde a un backend Node heredado;
-el despliegue actual utiliza el backend Spring Boot del repositorio indicado arriba.
+El backend de este proyecto es la API Spring Boot del repositorio indicado arriba.
+(El backend Node y las páginas HTML estáticas de etapas anteriores se eliminaron;
+siguen disponibles en el historial de Git.)
