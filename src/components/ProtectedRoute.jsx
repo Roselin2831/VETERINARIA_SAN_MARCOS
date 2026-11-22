@@ -1,6 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Loader from './Loader';
 
 /**
  * Protege rutas según sesión y rol.
@@ -14,7 +13,7 @@ export default function ProtectedRoute({ roles }) {
   const location = useLocation();
 
   if (loading) {
-    return <Loader label="Verificando sesión…" />;
+    return <div className="container py-5 text-center"><div className="spinner-border text-success" role="status" /><p className="mt-2 text-secondary">Verificando sesión…</p></div>;
   }
   if (!user) return <Navigate to="/ingresar" replace state={{ from: location.pathname }} />;
   if (roles && !roles.includes(user.role)) return <Navigate to="/no-autorizado" replace />;

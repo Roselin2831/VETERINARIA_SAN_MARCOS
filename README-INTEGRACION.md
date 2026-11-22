@@ -13,8 +13,8 @@ Para levantar frontend, backend y MySQL juntos con Docker Compose, sigue el
 al iniciar el backend.
 
 La URL de la API se cambia con `VITE_API_URL`. En desarrollo local es
-`http://localhost:8080/api`; en la imagen Docker es `/api` (mismo origen) y Nginx la
-reenvía al contenedor `backend`.
+`http://localhost:8080/api`; la imagen Docker la recibe al compilar desde
+`backend/docker-compose.aws.yml`.
 
 ## Dónde está cada parte
 
@@ -38,4 +38,4 @@ reenvía al contenedor `backend`.
 
 Notas:
 - `src/data/mockDb.js` ya no lo usa la aplicación; se mantiene solo para las pruebas unitarias de la etapa anterior.
-- En AWS, el navegador usa `http://<IP>/api` y Nginx lo reenvía al backend: solo hay que abrir el puerto 80 y no se necesita CORS ni recompilar si cambia la IP.
+- En AWS, el navegador accede directamente al puerto 8080 del backend; el Security Group debe permitir ese tráfico y Spring debe tener el origen del frontend en `CORS_ALLOWED_ORIGINS`.

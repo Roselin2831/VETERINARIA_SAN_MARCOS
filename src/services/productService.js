@@ -13,6 +13,5 @@ const toPayload = (p) => ({
   stock: Number(p.stock),
   offer: Boolean(p.offer),
   description: p.description,
-  emoji: p.emoji,
-  imageUrl: p.imageUrl?.trim() || null
+  emoji: p.emoji
 });
