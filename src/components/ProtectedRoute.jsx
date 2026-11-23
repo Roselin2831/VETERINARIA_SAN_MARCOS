@@ -9,6 +9,12 @@ import Loader from './Loader';
  *  - Mientras se valida la sesión al recargar → spinner (no redirige antes de tiempo).
  * Uso: <Route element={<ProtectedRoute roles={['ADMIN']} />}> ...rutas hijas... </Route>
  */
+export function StorefrontRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <Loader label="Verificando sesión…" />;
+  return user?.role === 'VENDEDOR' ? <Navigate to="/vendedor" replace /> : <Outlet />;
+}
+
 export default function ProtectedRoute({ roles }) {
   const { user, loading } = useAuth();
   const location = useLocation();

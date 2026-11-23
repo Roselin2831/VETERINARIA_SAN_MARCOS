@@ -10,15 +10,36 @@ Requiere Node.js 20 o superior. Con la API disponible en `http://localhost:8080`
 
 ```powershell
 npm ci
-$env:VITE_API_URL = "http://localhost:8080/api"
+$env:VITE_API_URL = "http://localhost:8080/api/v1"
 npm run dev
 ```
 
 La URL de API también puede definirse en un archivo `.env` local (ignorado por Git).
-La imagen Docker se compila por defecto con `VITE_API_URL=/api`: el navegador llama a
+La imagen Docker se compila por defecto con `VITE_API_URL=/api/v1`: el navegador llama a
 la API en el mismo origen y Nginx la reenvía al contenedor `backend`.
 
-## Docker Compose
+## Amazon Linux y Docker Compose
+
+La guía para desplegar ambos repositorios en la instancia existente está en
+[DEPLOY-AMAZON-LINUX.md](https://github.com/Angellssj/backend-veterinaria/blob/codex/mejoras-rubrica-ep3/DEPLOY-AMAZON-LINUX.md).
+
+Roles: CLIENTE compra y consulta sus pedidos; VENDEDOR consulta productos y pedidos
+en `/vendedor`; ADMIN mantiene productos, estados y roles en `/admin`.
+
+## Pruebas
+
+```bash
+npm ci
+npm test
+npm run build
+npm run test:e2e
+```
+
+`npm test` ejecuta Jasmine/Karma con componentes y servicios reales en Chrome Headless.
+`npm run test:e2e` necesita la API local encendida con las cuentas de demostración.
+`test:legacy` conserva las pruebas de datos simulados de la etapa anterior.
+
+## Estructura de despliegue
 
 Clona ambos repositorios en carpetas hermanas `backend` y `frontend` y ejecuta el
 script de despliegue del backend (ver su `DEPLOY-EC2.md`):

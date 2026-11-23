@@ -150,7 +150,7 @@ export default function Admin() {
         <span className="grow"><b>#{order.id} · {order.customer.name}</b><small>{new Date(order.createdAt).toLocaleDateString('es-CL')} · {order.customer.delivery} · {order.items?.length || 0} {order.items?.length === 1 ? 'producto' : 'productos'}</small></span>
         <span className="amount">{formatMoney(order.total)}</span>
         <span className={`status status-${order.status}`} aria-hidden="true" />
-        <select className="form-select form-select-sm w-auto" aria-label={`Estado del pedido ${order.id}`} value={order.status} disabled={order.status === 'CANCELADO'} onChange={(e) => changeStatus(order.id, e.target.value)}>
+        <select className="form-select form-select-sm w-auto" aria-label={`Estado del pedido ${order.id}`} value={order.status} disabled={['CANCELADO', 'ENTREGADO'].includes(order.status)} onChange={(e) => changeStatus(order.id, e.target.value)}>
           {Object.entries(statusLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
         </select>
       </div>)}</div> : <div className="empty py-4"><div className="empty-art" aria-hidden="true">📋</div><h2>Aún no hay pedidos</h2><p>Los pedidos de los clientes aparecerán aquí.</p></div>}
@@ -161,7 +161,7 @@ export default function Admin() {
         <span className={`avatar${u.role === 'ADMIN' ? ' admin' : ''}`} aria-hidden="true">{u.name.charAt(0).toUpperCase()}</span>
         <span className="grow"><b>{u.name}{u.id === user.id && <span className="text-secondary fw-normal"> (tú)</span>}</b><small>{u.email}</small></span>
         <select className="form-select form-select-sm w-auto" aria-label={`Rol de ${u.name}`} value={u.role} disabled={u.id === user.id} onChange={(e) => changeRole(u.id, e.target.value)}>
-          <option value="CLIENTE">CLIENTE</option><option value="ADMIN">ADMIN</option>
+          <option value="CLIENTE">CLIENTE</option><option value="VENDEDOR">VENDEDOR</option><option value="ADMIN">ADMIN</option>
         </select>
       </div>)}</div>
     </div>}

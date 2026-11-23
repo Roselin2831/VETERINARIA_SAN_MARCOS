@@ -15,14 +15,14 @@ export default function Auth({ mode }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  if (!loading && user) return <Navigate to={location.state?.from || (user.role === 'ADMIN' ? '/admin' : '/')} replace />;
+  if (!loading && user) return <Navigate to={location.state?.from || (user.role === 'ADMIN' ? '/admin' : user.role === 'VENDEDOR' ? '/vendedor' : '/')} replace />;
 
   const submit = async (event) => {
     event.preventDefault(); setError(''); setSending(true);
     try {
       const logged = registering ? await register(form) : await login(form.email, form.password);
       const from = location.state?.from;
-      navigate(from || (logged.role === 'ADMIN' ? '/admin' : '/'), { replace: true });
+      navigate(from || (logged.role === 'ADMIN' ? '/admin' : logged.role === 'VENDEDOR' ? '/vendedor' : '/'), { replace: true });
     } catch (err) { setError(err.message); } finally { setSending(false); }
   };
   const set = (field) => (e) => setForm({ ...form, [field]: e.target.value });
@@ -71,7 +71,7 @@ export default function Auth({ mode }) {
         <Link className="btn btn-line w-100" to={registering ? '/ingresar' : '/registro'} state={location.state}>{registering ? 'Inicia sesión' : 'Regístrate gratis'}</Link>
 
         {/* Las cuentas demo solo existen en desarrollo local; en producción la clave de admin es aleatoria. */}
-        {!registering && import.meta.env.DEV && <p className="demo-hint mb-0">Demo local: admin@sanmarcos.cl / Admin123! · cliente@sanmarcos.cl / Cliente123!</p>}
+        {!registering && import.meta.env.DEV && <p className="demo-hint mb-0">Demo local: admin@sanmarcos.cl / Admin123! · vendedor@sanmarcos.cl / Vendedor123! · cliente@sanmarcos.cl / Cliente123!</p>}
       </div>
     </section>
   </main>;

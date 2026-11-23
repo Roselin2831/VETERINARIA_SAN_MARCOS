@@ -9,7 +9,8 @@ const KEY = 'san-marcos-session';
 
 export const readSession = () => {
   try {
-    return JSON.parse(localStorage.getItem(KEY)) || null;
+    const value = JSON.parse(localStorage.getItem(KEY));
+    return value && typeof value.accessToken === 'string' && typeof value.refreshToken === 'string' ? value : null;
   } catch {
     return null;
   }
@@ -26,7 +27,7 @@ export const SESSION_KEY = KEY;
 export const tokenExpiresAt = (token) => {
   try {
     const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-    return payload.exp * 1000;
+    return Number.isFinite(payload.exp) && payload.exp > 0 ? payload.exp * 1000 : 0;
   } catch {
     return 0;
   }

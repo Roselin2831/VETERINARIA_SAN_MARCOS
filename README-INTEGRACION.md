@@ -1,41 +1,28 @@
-# Integración con el backend Spring Boot (EP3)
+# Integración frontend y API
 
-El frontend consume la API REST del backend Spring Boot de Veterinaria San Marcos.
+La API base es `http://localhost:8080/api/v1` en desarrollo y `/api/v1` en Docker. Nginx reenvía las llamadas al backend. El navegador nunca se conecta directamente a MySQL.
 
-## Ejecutar
-
-1. Levanta el backend (ver su README) → http://localhost:8080/swagger-ui.html
-2. En esta carpeta: `npm install` y `npm run dev` → http://localhost:5173
-3. En modo Docker, configura las credenciales de administrador con `APP_ADMIN_EMAIL` y `APP_ADMIN_PASSWORD` en `backend/.env`.
-
-Para levantar frontend, backend y MySQL juntos con Docker Compose, sigue el
-[README del proyecto](../README.md). En ese modo Flyway crea y actualiza el esquema
-al iniciar el backend.
-
-La URL de la API se cambia con `VITE_API_URL`. En desarrollo local es
-`http://localhost:8080/api`; en la imagen Docker es `/api` (mismo origen) y Nginx la
-reenvía al contenedor `backend`.
-
-## Dónde está cada parte
-
-| Archivo | Responsabilidad |
+| Módulo | Responsabilidad |
 |---|---|
-| `src/services/api.js` | Cliente HTTP único: agrega `Authorization: Bearer`, renueva el token y convierte errores |
-| `src/services/session.js` | Guarda y lee la sesión (tokens + usuario) en `localStorage` |
-| `src/services/*Service.js` | Llamadas por recurso: auth, productos, pedidos, usuarios |
-| `src/context/AuthContext.jsx` | Estado de sesión; al recargar la valida con `GET /api/auth/me` |
-| `src/context/ShopContext.jsx` | Catálogo desde la API y carrito en `localStorage` |
-| `src/components/ProtectedRoute.jsx` | Rutas protegidas por sesión y rol |
-| `src/pages/MyOrders.jsx`, `Forbidden.jsx` | Mis pedidos y página de acceso restringido |
+| services/api.js | Cliente fetch, Bearer, renovación compartida, un reintento y errores JSON |
+| services/session.js | Persistencia de tokens y validación de expiración |
+| context/AuthContext.jsx | Estado del usuario validado con /auth/me, recargas y cierre de sesión |
+| components/ProtectedRoute.jsx | Restricciones de rutas por rol |
+| pages/Seller.jsx | Consultas de productos y pedidos para VENDEDOR |
+| pages/Admin.jsx | CRUD de productos, estados y asignación de roles para ADMIN |
 
-## Rutas y permisos
-
-| Ruta | Visitante | CLIENTE | ADMIN |
+| Función | CLIENTE | VENDEDOR | ADMIN |
 |---|---|---|---|
-| `/`, `/categorias`, `/ofertas`, `/carrito` | ✓ | ✓ | ✓ |
-| `/checkout`, `/resultado/:status`, `/mis-pedidos` | → login | ✓ | ✓ |
-| `/admin` | → login | → acceso restringido | ✓ |
+| Comprar y ver pedidos propios | Sí | No | Sí |
+| Consultar todos los pedidos y detalle | No | Sí | Sí |
+| Modificar productos, estados o usuarios | No | No | Sí |
 
-Notas:
-- `src/data/mockDb.js` ya no lo usa la aplicación; se mantiene solo para las pruebas unitarias de la etapa anterior.
-- En AWS, el navegador usa `http://<IP>/api` y Nginx lo reenvía al backend: solo hay que abrir el puerto 80 y no se necesita CORS ni recompilar si cambia la IP.
+La sesión se recupera de localStorage y se revalida antes de mostrar rutas protegidas. La renovación rota el secreto en el servidor. Logout revoca la sesión. Una caída de red durante la renovación no borra las credenciales guardadas. Las respuestas pendientes no restauran una sesión cerrada. Los roles también se verifican en Spring Security en cada petición.
+
+localStorage es accesible a JavaScript: una vulnerabilidad XSS podría exponer los tokens. La aplicación académica requiere HTTPS y medidas adicionales antes de un uso productivo con datos reales.
+
+`npm test` prueba servicios y componentes reales con Jasmine/Karma. `npm run test:e2e` comprueba compra, roles, recarga, renovación, revocación y tamaños de pantalla. `src/data/mockDb.js` queda solo para pruebas de la etapa anterior y no alimenta el catálogo en ejecución.
+
+El checkout registra pedidos. No realiza cobros bancarios ni emite boletas del SII.
+
+La guía de Amazon Linux está en el repositorio backend: [despliegue](https://github.com/Angellssj/backend-veterinaria/blob/codex/mejoras-rubrica-ep3/DEPLOY-AMAZON-LINUX.md).

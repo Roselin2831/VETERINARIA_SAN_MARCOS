@@ -6,4 +6,6 @@ export const loginRequest = (email, password) =>
 export const registerRequest = ({ name, email, password }) =>
   api('/auth/register', { method: 'POST', body: { name, email, password }, auth: false });
 
+export const logoutRequest = () => api('/auth/logout', { method: 'POST' });
+
 export const meRequest = () => api('/auth/me');

@@ -6,7 +6,7 @@ RUN npm ci
 COPY . .
 
 # "/api" = mismo origen; Nginx reenvía al contenedor backend. No depende de la IP pública.
-ARG VITE_API_URL=/api
+ARG VITE_API_URL=/api/v1
 ENV VITE_API_URL=${VITE_API_URL}
 RUN if [ -z "$VITE_API_URL" ]; then echo "VITE_API_URL must be set at build time" >&2; exit 1; fi \
     && npm run build

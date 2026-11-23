@@ -8,3 +8,9 @@ node_modules
 .env
 .env.*
 !.env.example
+
+.cache/
+coverage/
+tests/.generados/
+playwright-report/
+test-results/

@@ -36,8 +36,21 @@ export function Layout() {
     lastCount.current = cartCount;
   }, [cartCount]);
 
-  const leave = () => { logout(); navigate('/'); };
+  const leave = async () => { try { await logout(); } catch { /* La sesión local se cierra también sin conexión. */ } navigate('/'); };
   const firstName = user?.name?.split(' ')[0] || '';
+
+  if (user?.role === 'VENDEDOR') return <div className="app-shell">
+    <header className="site-header"><nav className="container nav-wrap" aria-label="Principal">
+      <Brand to="/vendedor" />
+      <button className="nav-toggle" type="button" aria-expanded={open} aria-controls="seller-menu" aria-label={open ? 'Cerrar menú' : 'Abrir menú'} onClick={() => setOpen(!open)}><Icon name={open ? 'close' : 'menu'} size={22} /></button>
+      <div id="seller-menu" className={`nav-menu${open ? ' open' : ''}`}>
+        <NavLink className={pill} to="/vendedor">Consulta de productos y pedidos</NavLink>
+        <span>{user.name} · VENDEDOR</span><button className="btn btn-ghost" onClick={leave}>Salir</button>
+      </div>
+    </nav></header>
+    <main id="contenido"><Outlet /></main>
+    <footer className="container py-4">Veterinaria San Marcos</footer>
+  </div>;
 
   return <div className="app-shell">
     <a className="visually-hidden-focusable btn btn-warm m-2 position-absolute" href="#contenido">Saltar al contenido</a>

@@ -8,5 +8,6 @@ export const createOrder = (customer, cart) =>
   });
 
 export const getMyOrders = () => api('/orders/mine');
+export const getOrder = (id) => api(`/orders/${id}`);
 export const getAllOrders = () => api('/orders');
 export const updateOrderStatus = (id, status) => api(`/orders/${id}/status`, { method: 'PATCH', body: { status } });
