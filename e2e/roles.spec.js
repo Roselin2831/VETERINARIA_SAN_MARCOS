@@ -131,7 +131,7 @@ test('renueva el acceso vencido al recargar sin reutilizar el refresh anterior',
   expect(session.refreshToken).not.toBe(previous);
   expect((await request.post(`${api}/auth/refresh`, { data: { refreshToken: previous } })).status()).toBe(401);
   await page.getByRole('button', { name: 'Salir', exact: true }).click();
-  expect(await page.evaluate(() => localStorage.getItem('san-marcos-session'))).toBeNull();
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('san-marcos-session'))).toBeNull();
 });
 
 test('las vistas principales no desbordan en móvil, tableta y escritorio', async ({ page }) => {
