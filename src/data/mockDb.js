@@ -9,7 +9,7 @@ export const seedProducts = [
   { id: 'p6', name: 'Vitaminas multiespecie', category: 'Salud', price: 10990, stock: 14, offer: true, description: 'Apoyo diario para perros y gatos.', emoji: '💊' }
 ];
 
-const initialState = () => ({ products: seedProducts, users: [{ id: 'u1', name: 'Administración San Marcos', email: 'admin@sanmarcos.cl', password: 'Admin123!', role: 'admin' }], orders: [] });
+const initialState = () => ({ products: seedProducts.map((product) => ({ ...product })), users: [{ id: 'u1', name: 'Administración San Marcos', email: 'admin@sanmarcos.cl', password: 'Admin123!', role: 'admin' }], orders: [] });
 const load = () => { try { const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); return saved?.products ? saved : initialState(); } catch { return initialState(); } };
 const save = (state) => localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 const makeId = (prefix) => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;

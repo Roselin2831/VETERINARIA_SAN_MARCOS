@@ -49,9 +49,11 @@ function mostrarProducto(producto = productoPrueba) {
 describe("ProductCard - Pruebas de React", () => {
 
   beforeEach(() => {
+    spyOn(window, 'fetch').and.callFake(() => Promise.resolve(new Response(JSON.stringify([productoPrueba]), { status: 200 })));
     // Reiniciar la información usada por las pruebas
     localStorage.removeItem("san-marcos-store-v2");
     localStorage.removeItem("san-marcos-cart-v2");
+    localStorage.removeItem("san-marcos-cart-v3");
     sessionStorage.removeItem("san-marcos-user");
   });
 
@@ -61,6 +63,7 @@ describe("ProductCard - Pruebas de React", () => {
 
     localStorage.removeItem("san-marcos-store-v2");
     localStorage.removeItem("san-marcos-cart-v2");
+    localStorage.removeItem("san-marcos-cart-v3");
     sessionStorage.removeItem("san-marcos-user");
   });
 
