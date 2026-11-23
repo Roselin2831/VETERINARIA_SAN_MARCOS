@@ -86,6 +86,7 @@ test('administrador crea, edita y elimina con foto persistida', async ({ page })
   const row = page.getByRole('row').filter({ hasText: name });
   await expect(row).toBeVisible();
   await expect(row.locator('img')).toHaveAttribute('src', '/img/productos/gato.webp');
+  await page.evaluate(() => window.scrollTo(0, 0));
   await capture(page, '11-admin-productos');
   await row.getByRole('button', { name: `Editar ${name}` }).click();
   await page.getByLabel('Precio', { exact: true }).fill('5000');
